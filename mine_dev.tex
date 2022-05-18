@@ -8,85 +8,12 @@
 \date{\today}
 \maketitle
 
-\[
-	%\sssum[inv]{i}{1&2&3&4&5}{2&4}
-\]
 
-\ExplSyntaxOn
-
-
-\iffalse
-\tl_new:N \l__ssum_letter_tl
-\tl_new:N \l__ssum_ope_tl
-\bool_new:N \l__ssum_frac_bool
-\bool_new:N \l__ssum_sub_bool
-\bool_new:N \l__ssum_super_bool
-\bool_new:N \l__ssum_text_bool
-\bool_new:N \l__ssum_roman_bool
-\keys_define:nn{ssummodeule}{
-	letter .code:n = \tl_set:Nn \l__ssum_letter_tl {#1},
-	letter .initial:n = ,
-	frac .bool_set:N = \l__ssum_frac_bool,
-	super .bool_set:N = \l__ssum_super_bool,
-	sub .bool_set:N = \l__ssum_sub_bool,
-	text .bool_set:N = \l__ssum_text_bool,
-	ope .code:n = \tl_set:Nn \l__ssum_ope_tl {#1},
-	ope .initial:n = +,
-	rm .bool_set:N = \l__ssum_roman_bool,
-}
-\int_new:N \l__ssum_counter_int
-\seq_new:N \l__ssum_input_seq
-\seq_new:N \l__ssum_output_seq
-\NewDocumentCommand\ssum{O{} m} {
-	\group_begin:
-	\seq_set_from_clist:Nn \l__ssum_input_seq {#2}
-	\keys_set:nn{ssummodeule}{#1}
-	\int_until_do:nn{\l__ssum_counter_int == \seq_count:N \l__ssum_input_seq}{
-		\int_incr:N \l__ssum_counter_int
-		\tl_clear:N \l_tmpa_tl
-		\tl_clear:N \l_tmpb_tl
-		
-		\tl_if_empty:NTF \l__ssum_letter_tl
-		{%letter is empty
-			\prg_do_nothing:
-		}{%letter has tl data
-			\tl_put_right:Nn \l_tmpa_tl	{\l__ssum_letter_tl}
-			\bool_if:NTF \l__ssum_super_bool
-			{%super == true
-				\tl_put_right:Nn \l_tmpa_tl {^}
-			}{%super == false
-				\bool_if:NTF \l__ssum_sub_bool
-				{%sub == true
-					\tl_put_right:Nn \l_tmpa_tl {\c_math_subscript_token}
-				}{%sub == false
-					\prg_do_nothing:
-				}
-			}
-		}
-		\tl_put_right:Nn \l_tmpa_tl {{\seq_item:Nn \l__ssum_input_seq {\l__ssum_counter_int}}}
-		
-		\bool_if:NTF \l__ssum_frac_bool
-		{%frac == true
-			\tl_set:Nx \l_tmpa_tl {{
-				\bool_if:NTF \l__ssum_text_bool
-				{\frac{1}{\l_tmpa_tl}}{\dfrac{1}{\l_tmpa_tl}}}
-			}
-		}{%frac == false
-			\tl_set:Nn \l_tmpb_tl {\l_tmpa_tl}
-		}
-		\seq_put_right:Nx \l__ssum_output_seq {\l_tmpa_tl}
-	}
-	\seq_use:Nn \l__ssum_output_seq {\l__ssum_ope_tl}
-	\group_end:
-}
-\fi
-
-\ExplSyntaxOff
 
 \begin{eq}
-	\ssum{1,2,3}\\
-	\ssum[frac]{5,7,90}\\
-	\ssum[letter = R,sub,frac, ope=-]{1,2,34,5,a}
+	&\ssum{1,23,a}\\
+	&-\ssum[frac, ope=-]{4,5,b}\\
+	&\ssum[l=R, sub, frac]{7,8,9c,l_0}
 \end{eq}
 
 

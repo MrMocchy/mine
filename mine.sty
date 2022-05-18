@@ -74,7 +74,7 @@
 \bool_new:N \l__ssum_sub_bool
 \bool_new:N \l__ssum_super_bool
 \bool_new:N \l__ssum_text_bool
-\bool_new:N \l__ssum_roman_bool
+\bool_new:N \l__ssum_italic_bool
 \bool_new:N \l__ssum_dot_bool
 \keys_define:nn{ssummodeule}{
 	l .code:n = \tl_set:Nn \l__ssum_letter_tl {#1},
@@ -86,7 +86,7 @@
 	text .bool_set:N = \l__ssum_text_bool,
 	ope .code:n = \tl_set:Nn \l__ssum_ope_tl {#1},
 	ope .initial:n = +,
-	rm .bool_set:N = \l__ssum_roman_bool,
+	it .bool_set:N = \l__ssum_italic_bool,
 	dot .bool_set:N = \l__ssum_dot_bool,
 }
 \int_new:N \l__ssum_counter_int
@@ -123,7 +123,7 @@
 		
 		
 		\tl_put_right:Nx \l_tmpa_tl {{
-			\bool_if:NTF \l__ssum_roman_bool {\mathrm}{}%添え字をroman体
+			\bool_if:NTF \l__ssum_italic_bool {}{\mathrm}%添え字をroman体
 			{\seq_item:Nn \l__ssum_input_seq {\l__ssum_counter_int}}
 		}}
 		
