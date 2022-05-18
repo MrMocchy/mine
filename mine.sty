@@ -1,0 +1,151 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mine}
+
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{physics}
+\usepackage{siunitx}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{enumerate}
+\usepackage{empheq}
+\usepackage{arrayjobx}
+\usepackage{ifthen}
+\usepackage{setspace}
+\usepackage{color}
+\usepackage{framed}
+\usepackage{comment}
+\usepackage{expl3}
+
+\renewcommand{\rm}[1]{_{\mathrm{#1}}}
+
+\let\oldsi\si
+\renewcommand{\si}[1]{\,\oldsi{#1}}
+\newcommand{\fsi}[3]{\frac{#1}{#2}\si{#3}}
+
+\DeclareMathOperator{\wbs}{||}%wa bun no seki
+
+\newcommand{\inv}[1]{\frac{1}{#1}}
+
+\let\disp\displaystyle
+
+\newcommand{\pip}[2][]{\frac{#1\pi}{#2}}
+\newcommand{\dpip}[2][]{\dfrac{#1\pi}{#2}}
+
+\newcommand{\itemn}[2][enumi]{%item num
+	\setcounter{#1}{#2}
+	\addtocounter{#1}{-1}
+	\item
+}
+
+
+\newcommand{\img}[2][width=5cm]{
+	\begin{figure*}[h]
+	\includegraphics[#1]{#2}
+	\end{figure*}
+}
+
+
+\newcounter{skbcntr}
+\newcommand{\skb}{%siki bangou
+	\stepcounter{skbcntr}
+	\quad\cdots(\theskbcntr)
+}
+
+
+\newenvironment{eq}[1][]
+{\[\begin{alignedat}[#1]{100}}{\end{alignedat}\]}
+\newenvironment{eq*}[1][t]
+{\(\begin{alignedat}[#1]{100}}{\end{alignedat}\)}
+	
+\newenvironment{rnrt}
+{\[\hspace{-8pt}\left\{\begin{alignedat}{100}}
+{\end{alignedat}\right.\]}
+
+
+%frac height for mqty
+\newcommand{\fh}{\rule[-2.3ex]{0pt}{6ex}}
+
+
+\ExplSyntaxOn
+
+\tl_new:N \l__ssum_letter_tl
+\tl_new:N \l__ssum_ope_tl
+\bool_new:N \l__ssum_frac_bool
+\bool_new:N \l__ssum_sub_bool
+\bool_new:N \l__ssum_super_bool
+\bool_new:N \l__ssum_text_bool
+\bool_new:N \l__ssum_roman_bool
+\bool_new:N \l__ssum_dot_bool
+\keys_define:nn{ssummodeule}{
+	l .code:n = \tl_set:Nn \l__ssum_letter_tl {#1},
+	letter .code:n = \tl_set:Nn \l__ssum_letter_tl {#1},
+	letter .initial:n = ,
+	frac .bool_set:N = \l__ssum_frac_bool,
+	super .bool_set:N = \l__ssum_super_bool,
+	sub .bool_set:N = \l__ssum_sub_bool,
+	text .bool_set:N = \l__ssum_text_bool,
+	ope .code:n = \tl_set:Nn \l__ssum_ope_tl {#1},
+	ope .initial:n = +,
+	rm .bool_set:N = \l__ssum_roman_bool,
+	dot .bool_set:N = \l__ssum_dot_bool,
+}
+\int_new:N \l__ssum_counter_int
+\seq_new:N \l__ssum_input_seq
+\seq_new:N \l__ssum_output_seq
+\NewDocumentCommand\ssum{O{} m} {
+	\group_begin:
+	\seq_set_from_clist:Nn \l__ssum_input_seq {#2}
+	\keys_set:nn{ssummodeule}{#1}
+	\int_until_do:nn{\l__ssum_counter_int == \seq_count:N \l__ssum_input_seq}{
+		\int_incr:N \l__ssum_counter_int
+		\tl_clear:N \l_tmpa_tl
+		\tl_clear:N \l_tmpb_tl
+		
+		\tl_if_empty:NTF \l__ssum_letter_tl
+		{%letter is empty
+			\prg_do_nothing:
+		}{%letter has tl data
+			\bool_if:NTF \l__ssum_dot_bool
+			{\tl_put_right:Nn \l_tmpa_tl {\noexpand\dot}}{}%本体にdot
+			\tl_put_right:Nn \l_tmpa_tl	{{\l__ssum_letter_tl}}%本体(?)の文字
+			\bool_if:NTF \l__ssum_super_bool
+			{%super == true
+				\tl_put_right:Nn \l_tmpa_tl {^}%上付き
+			}{%super == false
+				\bool_if:NTF \l__ssum_sub_bool
+				{%sub == true
+					\tl_put_right:Nn \l_tmpa_tl {\c_math_subscript_token}%下付き
+				}{%sub == false
+					\prg_do_nothing:
+				}
+			}
+		}
+		
+		
+		\tl_put_right:Nx \l_tmpa_tl {{
+			\bool_if:NTF \l__ssum_roman_bool {\mathrm}{}%添え字をroman体
+			{\seq_item:Nn \l__ssum_input_seq {\l__ssum_counter_int}}
+		}}
+		
+		\bool_if:NTF \l__ssum_frac_bool
+		{%frac == true
+			\tl_set:Nx \l_tmpa_tl {{
+				\bool_if:NTF \l__ssum_text_bool
+				{\frac{1}{\l_tmpa_tl}}{\dfrac{1}{\l_tmpa_tl}}}
+			}
+		}{%frac == false
+			\tl_set:Nn \l_tmpb_tl {\l_tmpa_tl}
+		}
+		\seq_put_right:Nx \l__ssum_output_seq {\l_tmpa_tl}
+	}
+	\seq_use:Nn \l__ssum_output_seq {\l__ssum_ope_tl}
+	\group_end:
+}
+
+\ExplSyntaxOff
+
+
+%以下メモ
+%一部を枠で囲う\fbox{text}
+%何行も枠で囲う\begin{oframed}\end{oframed}
+%赤字、太字→\textcolor{red}{\textbf{不正解}}
