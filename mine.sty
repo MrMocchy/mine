@@ -31,9 +31,9 @@
 \newcommand{\pip}[2][]{\frac{#1\pi}{#2}}
 \newcommand{\dpip}[2][]{\dfrac{#1\pi}{#2}}
 
-\newcommand{\itemn}[2][enumi]{%item num
-	\setcounter{#1}{#2}
-	\addtocounter{#1}{-1}
+\newcommand{\itemn}[2][i]{%item num
+	\setcounter{enum#1}{#2}
+	\addtocounter{enum#1}{-1}
 	\item
 }
 
@@ -145,7 +145,8 @@
 \ExplSyntaxOff
 
 
-%以下メモ
-%一部を枠で囲う\fbox{text}
-%何行も枠で囲う\begin{oframed}\end{oframed}
-%赤字、太字→\textcolor{red}{\textbf{不正解}}
+\begin{comment}以下メモ
+一部を枠で囲う\fbox{text}
+何行も枠で囲う\begin{oframed}\end{oframed}
+赤字、太字→\textcolor{red}{\textbf{不正解}}
+\end{comment}
