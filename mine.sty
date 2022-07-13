@@ -14,7 +14,15 @@
 \usepackage{color}
 \usepackage{framed}
 \usepackage{comment}
+\usepackage{float}
 \usepackage{expl3}
+\usepackage{tikz}
+\usepackage{circuitikz}
+\usepackage{caption}
+
+\ctikzset{european resistors,american voltages, american currents, voltage dir=RP}
+\captionsetup{justification=RaggedRight, singlelinecheck=false}
+
 
 \renewcommand{\rm}[1]{_{\mathrm{#1}}}
 
@@ -58,9 +66,12 @@
 \newenvironment{eq*}[1][t]
 {\(\begin{alignedat}[#1]{100}}{\end{alignedat}\)}
 	
-\newenvironment{rnrt}
-{\[\hspace{-8pt}\left\{\begin{alignedat}{100}}
+\newenvironment{rnrt}[1][]
+{\[\hspace{-8pt}\left\{\begin{alignedat}[#1]{100}}
 {\end{alignedat}\right.\]}
+\newenvironment{rnrt*}[1][]
+{\(\hspace{-6pt}\left\{\begin{alignedat}[#1]{100}}
+{\end{alignedat}\right.\)}
 
 
 %frac height for mqty
